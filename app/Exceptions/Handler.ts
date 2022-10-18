@@ -14,10 +14,25 @@
 */
 
 import Logger from '@ioc:Adonis/Core/Logger'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
     super(Logger)
+  }
+
+  public async handle(error: any, ctx: HttpContextContract) {
+    /**
+     * Self handle the validation exception
+     */
+    if (error.code === 'E_ROW_NOT_FOUND') {
+      return ctx.response.notFound({ message: 'Record is not found.' })
+    }
+
+    /**
+     * Forward rest of the exceptions to the parent class
+     */
+    return super.handle(error, ctx)
   }
 }
