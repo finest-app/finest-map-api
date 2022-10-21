@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateFileValidator from 'App/Validators/CreateFileValidator'
 import EditFileValidator from 'App/Validators/EditFileValidator'
-import RenameValidator from 'App/Validators/RenameValidator'
+import RenameFileValidator from 'App/Validators/RenameFileValidator'
 
 enum FileKind {
   json = 'flow',
@@ -47,7 +47,7 @@ export default class FilesController {
     const user = auth.use('api').user!
     const fileId: number = request.param('id')
 
-    const { name } = await request.validate(RenameValidator)
+    const { name } = await request.validate(RenameFileValidator)
 
     const file = await user.related('files').query().where('id', fileId).firstOrFail()
 
