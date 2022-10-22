@@ -4,8 +4,8 @@ import EditFileValidator from 'App/Validators/EditFileValidator'
 import RenameFileValidator from 'App/Validators/RenameFileValidator'
 
 enum FileKind {
-  json = 'flow',
-  markdown = 'md',
+  flow = 'json',
+  md = 'markdown',
 }
 
 export default class FilesController {
@@ -14,7 +14,7 @@ export default class FilesController {
 
     const files = await user.related('files').query()
 
-    return { data: files }
+    return files
   }
 
   public async show({ auth, request }: HttpContextContract) {
@@ -26,9 +26,7 @@ export default class FilesController {
 
     const sourceFile = await file.related('sourceFiles').query().firstOrFail()
 
-    return {
-      data: sourceFile,
-    }
+    return sourceFile
   }
 
   public async create({ auth, request, response }: HttpContextContract) {

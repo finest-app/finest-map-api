@@ -9,4 +9,4 @@ Route.group(() => {
   Route.delete('/delete/:id', 'FilesController.delete').where('id', Route.matchers.number())
 })
   .prefix('/files')
-  .middleware('auth')
+  .middleware(['auth', 'transformBody'])
