@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { types } from '@ioc:Adonis/Core/Helpers'
 
 export default class TransformBody {
   public async handle({ response }: HttpContextContract, next: () => Promise<void>) {
@@ -7,10 +8,7 @@ export default class TransformBody {
 
     const existingBody = response.lazyBody[0]
 
-    if (
-      !existingBody ||
-      (existingBody.constructor !== Object && existingBody.constructor !== Array)
-    ) {
+    if (!existingBody || (!types.isObject(existingBody) && existingBody.constructor !== Array)) {
       return
     }
 
