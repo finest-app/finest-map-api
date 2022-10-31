@@ -24,9 +24,9 @@ export default class FilesController {
 
     const file = await user.related('files').query().where('id', fileId).firstOrFail()
 
-    const sourceFile = await file.related('sourceFiles').query().firstOrFail()
+    await file.load('sourceFile')
 
-    return sourceFile
+    return file
   }
 
   public async create({ auth, request, response }: HttpContextContract) {
@@ -36,9 +36,11 @@ export default class FilesController {
 
     const file = await user.related('files').create({ name, kind, type: FileKind[kind] })
 
-    await file.related('sourceFiles').create({ raw })
+    await file.related('sourceFile').create({ raw })
 
-    return response.created()
+    await file.load('sourceFile')
+
+    return response.created(file)
   }
 
   public async rename({ auth, request, response }: HttpContextContract) {
@@ -58,13 +60,15 @@ export default class FilesController {
     const user = auth.use('api').user!
     const fileId: number = request.param('id')
 
-    const { raw } = await request.validate(EditFileValidator)
+    const { name, raw } = await request.validate(EditFileValidator)
 
     const file = await user.related('files').query().where('id', fileId).firstOrFail()
 
-    const sourceFile = await file.related('sourceFiles').query().firstOrFail()
+    await file.load('sourceFile')
 
-    await sourceFile.merge({ raw }).save()
+    await file.merge({ name }).save()
+
+    await file.sourceFile.merge({ raw }).save()
 
     return response.noContent()
   }

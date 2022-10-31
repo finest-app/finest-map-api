@@ -19,7 +19,7 @@ export default class File extends BaseModel {
   public owner_id: number
 
   @hasOne(() => SourceFile, { foreignKey: 'file_id' })
-  public sourceFiles: HasOne<typeof SourceFile>
+  public sourceFile: HasOne<typeof SourceFile>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
